@@ -113,7 +113,8 @@ class AthenaDialect(DefaultDialect):
         return [row.schema_name for row in connection.execute(query).fetchall()]
 
     @reflection.cache
-    def get_table_names(self, connection, schema=None, **kw):
+    def get_table_names(self, engine, schema=None, **kw):
+        connection = engine.contextual_connect()
         schema = schema if schema else connection.connection.schema_name
         query = """
                 SELECT table_name
@@ -130,7 +131,8 @@ class AthenaDialect(DefaultDialect):
             return False
 
     @reflection.cache
-    def get_columns(self, connection, table_name, schema=None, **kw):
+    def get_columns(self, engine, table_name, schema=None, **kw):
+        connection = engine.contextual_connect()
         schema = schema if schema else connection.connection.schema_name
         query = """
                 SELECT
